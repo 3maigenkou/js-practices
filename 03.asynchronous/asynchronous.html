@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>asynchronous</title>
+  </head>
+  <body>
+    <script>
+      async function getHtml(url) {
+        try {
+          let response = await fetch(url);
+          let html = await response.text();
+          console.log(html);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+      getHtml(`https://bootcamp.fjord.jp`);
+    </script>
+  </body>
+</html>
