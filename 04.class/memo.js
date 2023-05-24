@@ -1,6 +1,11 @@
 const sqlite3 = require("sqlite3").verbose();
 const minimist = require("minimist");
 const { Select } = require("enquirer");
+const readline = require("readline");
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
 
 class Memo {
   constructor(option = null) {
@@ -8,7 +13,6 @@ class Memo {
     this.db = new sqlite3.Database("memo.db");
     this.createTable();
     this.run();
-    this.db.close();
   }
 
   run() {
@@ -47,7 +51,24 @@ class Memo {
   }
 
   create() {
-    // INSERT INTO memo (title, content) VALUES ('?', '?');
+    if (!process.stdin.isTTY) {
+      process.stdin.on("data", (title) => {
+        const memo = title.toString();
+        this.db.run("INSERT INTO memo (title) VALUES(?)", [memo]);
+        console.log("Created.");
+      });
+    } else {
+      rl.question("title:", (answer1) => {
+        rl.question("content:", (answer2) => {
+          this.db.run("INSERT INTO memo (title, content) VALUES(?,?)", [
+            answer1,
+            answer2,
+          ]);
+          console.log("Created.");
+          rl.close();
+        });
+      });
+    }
   }
 
   list() {
@@ -69,11 +90,12 @@ class Memo {
       const prompt = new Select({
         name: "readMemo",
         message: "Choose a note you want to see:",
-        choices: memos.map(memo => memo.title),
+        choices: memos.map((memo) => memo.title),
       });
-      prompt.run()
-        .then(answer => {
-          let selectedMemo = memos.find(memo => memo.title === answer);
+      prompt
+        .run()
+        .then((answer) => {
+          let selectedMemo = memos.find((memo) => memo.title === answer);
           console.log(selectedMemo.content);
         })
         .catch(console.error);
@@ -81,7 +103,27 @@ class Memo {
   }
 
   delete() {
-    // DELETE FROM memo WHERE memo_id = ?;
+    this.db.all("SELECT * FROM memo", (error, memos) => {
+      if (error) {
+        console.log(error);
+        return;
+      }
+      const prompt = new Select({
+        name: "deleteMemo",
+        message: "Choose a note you want to delete:",
+        choices: memos.map((memo) => memo.title),
+      });
+      prompt
+        .run()
+        .then((answer) => {
+          let selectedMemo = memos.find((memo) => memo.title === answer);
+          this.db.run("DELETE FROM memo WHERE memo_id = ?", [
+            selectedMemo.memo_id,
+          ]);
+          console.log("Deleted.");
+        })
+        .catch(console.error);
+    });
   }
 }
 
