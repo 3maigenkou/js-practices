@@ -1,43 +1,37 @@
-const argv = require("minimist")(process.argv.slice(2), {
-  alias: {
-    y: "year",
-    m: "month",
-  },
-});
+const argv = require("minimist")(process.argv.slice(2));
+
 const today = new Date();
 const year = argv.y || today.getFullYear();
 const month = argv.m || today.getMonth() + 1;
-const wday = ["日", "月", "火", "水", "木", "金", "土"];
+
+const wdays = ["日", "月", "火", "水", "木", "金", "土"];
+
 const firstDay = new Date(year, month - 1, 1);
 const lastDay = new Date(year, month, 0);
-const dayOfWeek = firstDay.getDay();
-const firstDayStr = firstDay
-  .getDate()
-  .toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" });
-const lastDayStr = lastDay
-  .getDate()
-  .toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" });
+
 let days = [];
-for (let i = firstDayStr; i <= lastDayStr; i++) {
-  days.push(i);
-}
-for (let i = 0; i <= dayOfWeek; i++) {
-  days.unshift(" ");
+for (let i = firstDay.getDate(); i <= lastDay.getDate(); i++) {
+  days.push(new Date(year, month - 1, i));
 }
 
 console.log(`     ${month}月  ${year}`);
-for (let i = 0; i < wday.length; i++) {
-  process.stdout.write(`${wday[i]} `);
+wdays.forEach((wday) => {
+  process.stdout.write(`${wday} `);
+});
+process.stdout.write(`\n`);
+
+const dayOfWeek = firstDay.getDay();
+for (let i = 0; i < dayOfWeek; i++) {
+  process.stdout.write(`   `);
 }
 
-for (let i = 0; i < days.length; i++) {
-  if (i % 7 === 0 && days[i] < 10) {
-    process.stdout.write(` ${days[i]}\n`);
-  } else if (days[i] < 10) {
-    process.stdout.write(` ${days[i]} `);
-  } else if (i % 7 === 0) {
-    process.stdout.write(`${days[i]}\n`);
+days.forEach((day) => {
+  if (day.getDate() < 10) {
+    process.stdout.write(` ${day.getDate()} `);
   } else {
-    process.stdout.write(`${days[i]} `);
+    process.stdout.write(`${day.getDate()} `);
   }
-}
+  if (day.getDay() === 6) {
+    process.stdout.write(`\n`);
+  }
+});
