@@ -6,17 +6,17 @@
   </head>
   <body>
     <script>
-      async function getHtml(url) {
+      async function outputHtml(url) {
         try {
-          let response = await fetch(url);
-          let html = await response.text();
+          const response = await fetch(url);
+          const html = await response.text();
           console.log(html);
         } catch (error) {
           console.log(error);
         }
       }
 
-      getHtml(`https://bootcamp.fjord.jp`);
+      outputHtml(`https://bootcamp.fjord.jp`);
     </script>
   </body>
 </html>
