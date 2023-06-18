@@ -1,27 +1,29 @@
-const argv = require("minimist")(process.argv.slice(2));
+import minimist from "minimist";
+
+const argv = minimist(process.argv.slice(2));
 
 const today = new Date();
 const year = argv.y || today.getFullYear();
 const month = argv.m || today.getMonth() + 1;
 
-const wdays = ["日", "月", "火", "水", "木", "金", "土"];
-
 const firstDay = new Date(year, month - 1, 1);
 const lastDay = new Date(year, month, 0);
 
-let days = [];
-for (let i = firstDay.getDate(); i <= lastDay.getDate(); i++) {
-  days.push(new Date(year, month - 1, i));
+const days = [];
+for (let day = firstDay.getDate(); day <= lastDay.getDate(); day++) {
+  days.push(new Date(year, month - 1, day));
 }
 
-console.log(`     ${month}月  ${year}`);
-wdays.forEach((wday) => {
-  process.stdout.write(`${wday} `);
-});
-process.stdout.write(`\n`);
+const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
 
-const dayOfWeek = firstDay.getDay();
-for (let i = 0; i < dayOfWeek; i++) {
+console.log(`     ${month}月  ${year}`);
+weekdays.forEach((weekday) => {
+  process.stdout.write(`${weekday} `);
+});
+process.stdout.write("\n");
+
+const firstDayOfWeekday = firstDay.getDay();
+for (let i = 0; i < firstDayOfWeekday; i++) {
   process.stdout.write(`   `);
 }
 
@@ -32,6 +34,6 @@ days.forEach((day) => {
     process.stdout.write(`${day.getDate()} `);
   }
   if (day.getDay() === 6) {
-    process.stdout.write(`\n`);
+    process.stdout.write("\n");
   }
 });
