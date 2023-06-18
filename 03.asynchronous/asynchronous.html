@@ -9,6 +9,9 @@
       async function outputHtml(url) {
         try {
           const response = await fetch(url);
+          if (!response.ok) {
+            throw new Error("Network response was not OK");
+          }
           const html = await response.text();
           console.log(html);
         } catch (error) {
@@ -16,7 +19,7 @@
         }
       }
 
-      outputHtml(`https://bootcamp.fjord.jp`);
+      outputHtml("https://bootcamp.fjord.jp");
     </script>
   </body>
 </html>
