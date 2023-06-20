@@ -10,7 +10,11 @@ const firstDay = new Date(year, month - 1, 1);
 const lastDay = new Date(year, month, 0);
 
 const monthDays = [];
-for (let dayNumber = firstDay.getDate(); dayNumber <= lastDay.getDate(); dayNumber++) {
+for (
+  let dayNumber = firstDay.getDate();
+  dayNumber <= lastDay.getDate();
+  dayNumber++
+) {
   monthDays.push(new Date(year, month - 1, dayNumber));
 }
 
