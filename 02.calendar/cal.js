@@ -26,8 +26,8 @@ weekdays.forEach((weekday) => {
 });
 process.stdout.write("\n");
 
-const firstDayWeekday = firstDay.getDay();
-for (let i = 0; i < firstDayWeekday; i++) {
+const firstDayOfWeek = firstDay.getDay();
+for (let i = 0; i < firstDayOfWeek; i++) {
   process.stdout.write(`   `);
 }
 
