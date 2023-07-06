@@ -10,20 +10,20 @@
         try {
           const response = await fetch(url);
           if (!response.ok) {
-            console.log("Network response was not OK");
+            console.error("Network response was not OK");
           }
           const html = await response.text();
           console.log(html);
         } catch (error) {
           if (error instanceof TypeError) {
-            console.log('TypeError:', error.message);
+            console.error("TypeError:", error.message);
           } else {
-            console.log('UnknownError:', error.message)
+            throw new Error(error);
           }
         }
       }
 
-      outputHtml("https://httpstat.us/400");
+      outputHtml("https://bootcamp.fjord.jp");
     </script>
   </body>
 </html>
