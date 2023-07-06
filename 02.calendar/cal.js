@@ -18,11 +18,11 @@ for (
   monthDays.push(new Date(year, month - 1, dayNumber));
 }
 
-const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
+const weekdaysName = ["日", "月", "火", "水", "木", "金", "土"];
 
 console.log(`     ${month}月  ${year}`);
-weekdays.forEach((weekday) => {
-  process.stdout.write(`${weekday} `);
+weekdaysName.forEach((weekdayName) => {
+  process.stdout.write(`${weekdayName} `);
 });
 process.stdout.write("\n");
 
