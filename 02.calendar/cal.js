@@ -18,16 +18,16 @@ for (
   monthDays.push(new Date(year, month - 1, dayNumber));
 }
 
-const weekdaysName = ["日", "月", "火", "水", "木", "金", "土"];
+const dayOfWeekNames = ["日", "月", "火", "水", "木", "金", "土"];
 
 console.log(`     ${month}月  ${year}`);
-weekdaysName.forEach((weekdayName) => {
-  process.stdout.write(`${weekdayName} `);
+dayOfWeekNames.forEach((dayOfWeekName) => {
+  process.stdout.write(`${dayOfWeekName} `);
 });
 process.stdout.write("\n");
 
-const firstDayOfWeek = firstDay.getDay();
-for (let i = 0; i < firstDayOfWeek; i++) {
+const firstDayOfWeekNumber = firstDay.getDay();
+for (let i = 0; i < firstDayOfWeekNumber; i++) {
   process.stdout.write(`   `);
 }
 
