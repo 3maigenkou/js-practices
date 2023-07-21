@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>asynchronous</title>
+  </head>
+  <body>
+    <script>
+      async function outputHtml(url) {
+        try {
+          const response = await fetch(url);
+          if (!response.ok) {
+            console.error("Network response was not OK");
+            return;
+          }
+          const html = await response.text();
+          console.log(html);
+        } catch (error) {
+          if (error instanceof TypeError) {
+            console.error("TypeError:", error.message);
+          } else {
+            throw error;
+          }
+        }
+      }
+
+      outputHtml("https://bootcamp.fjord.jp");
+    </script>
+  </body>
+</html>
