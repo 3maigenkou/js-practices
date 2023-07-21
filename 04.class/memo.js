@@ -1,7 +1,8 @@
-const sqlite3 = require("sqlite3").verbose();
-const minimist = require("minimist");
-const { Select } = require("enquirer");
-const readline = require("readline");
+import sqlite3 from "sqlite3";
+import minimist from "minimist";
+import enquirer from "enquirer";
+const { Select } = enquirer;
+import readline from "readline";
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
