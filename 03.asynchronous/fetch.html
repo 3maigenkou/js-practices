@@ -10,7 +10,8 @@
         try {
           const response = await fetch(url);
           if (!response.ok) {
-            return console.error("Network response was not OK");
+            console.error("Network response was not OK");
+            return;
           }
           const html = await response.text();
           console.log(html);
