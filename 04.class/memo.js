@@ -25,20 +25,21 @@ class Memo {
       this.read();
     } else if (option.d) {
       this.delete();
+    } else if (!process.stdin.isTTY) {
+      this.createPipeline();
     } else {
-      this.create();
+      this.createQuestion();
     }
   }
 
   createTable() {
-    this.db.run(
-      `CREATE TABLE IF NOT EXISTS memo(
-        memo_id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title Text,
-        content Text
-        )
-      `
-    );
+    const sql = `CREATE TABLE IF NOT EXISTS memo(
+                  memo_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                  title Text,
+                  content Text
+                  )
+                 `;
+    this.db.run(sql);
   }
 
   memoFunction() {
@@ -51,25 +52,25 @@ class Memo {
     });
   }
 
-  create() {
-    if (!process.stdin.isTTY) {
-      process.stdin.on("data", (title) => {
-        const memo = title.toString();
-        this.db.run("INSERT INTO memo (title) VALUES(?)", [memo]);
+  createPipeline() {
+    process.stdin.on("data", (text) => {
+      const memo = text.toString();
+      this.db.run("INSERT INTO memo (title) VALUES(?)", [memo]);
+      console.log("Created.");
+    });
+  }
+
+  createQuestion() {
+    rl.question("title:", (answer1) => {
+      rl.question("content:", (answer2) => {
+        this.db.run("INSERT INTO memo (title, content) VALUES(?,?)", [
+          answer1,
+          answer2,
+        ]);
         console.log("Created.");
+        rl.close();
       });
-    } else {
-      rl.question("title:", (answer1) => {
-        rl.question("content:", (answer2) => {
-          this.db.run("INSERT INTO memo (title, content) VALUES(?,?)", [
-            answer1,
-            answer2,
-          ]);
-          console.log("Created.");
-          rl.close();
-        });
-      });
-    }
+    });
   }
 
   list() {
