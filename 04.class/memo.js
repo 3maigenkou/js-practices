@@ -3,10 +3,6 @@ import minimist from "minimist";
 import enquirer from "enquirer";
 const { Select } = enquirer;
 import readline from "readline";
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
 
 class Memo {
   constructor() {
@@ -174,13 +170,18 @@ class Memo {
       console.log("There are no memos.");
       return;
     }
-    const selectedTitle = await this.#select(message, memos.map((memo) => memo.title));
+    const selectedTitle = await this.#select(
+      message,
+      memos.map((memo) => memo.title)
+    );
     return memos.find((memo) => memo.title === selectedTitle);
   }
 
   async #read() {
     try {
-      const readingMemo = await this.#getSelectedMemo("Please select the memo you would like to view.");
+      const readingMemo = await this.#getSelectedMemo(
+        "Please select the memo you would like to view."
+      );
       if (readingMemo) {
         console.log(readingMemo.content);
       }
@@ -191,19 +192,21 @@ class Memo {
 
   #deleteMemo(id) {
     return new Promise((resolve, reject) => {
-      this.db.run("DELETE FROM memo WHERE memo_id = ?", [id], (err) =>{
+      this.db.run("DELETE FROM memo WHERE memo_id = ?", [id], (err) => {
         if (err) {
           reject(err);
-        } else{
-          resolve()
+        } else {
+          resolve();
         }
-      })
-    })
+      });
+    });
   }
 
   async #delete() {
     try {
-      const selectedMemo = await this.#getSelectedMemo("Please select the memo you would like to delete.");
+      const selectedMemo = await this.#getSelectedMemo(
+        "Please select the memo you would like to delete."
+      );
       if (selectedMemo) {
         await this.#deleteMemo(selectedMemo.memo_id);
         console.log("Deleted.");
