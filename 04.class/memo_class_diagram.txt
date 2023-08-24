@@ -1,0 +1,19 @@
+-Memo
+  -rl
+  -db
+  -run(argv = null)
+  -#closeDbAndRl()
+  -#createTable()
+  -#parseOptions(argv)
+  -#insertMemo(title, content)
+  -#getPipelineText()
+  -#createPipeline()
+  -#rlQuestion(prompt)
+  -#createQuestion()
+  -#getMemoData()
+  -#list()
+  -#select(message, choices)
+  -#getSelectedMemo(message)
+  -#read()
+  -#deleteMemo(id)
+  -#delete()

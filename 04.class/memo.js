@@ -11,13 +11,18 @@ const rl = readline.createInterface({
 class Memo {
   constructor(option = null) {
     this.option = option;
-    this.db = new sqlite3.Database("memo.db");
-    this.createTable();
-    this.run();
+    this.db = new sqlite3.Database("memo.db", (err) => {
+      if (err) {
+        console.error(err.message);
+        return;
+      }
+      this.createTable();
+      this.run();
+    });
   }
 
   run() {
-    const option = this.memoFunction();
+    const option = this.parseOptions();
 
     if (option.l) {
       this.list();
@@ -35,14 +40,18 @@ class Memo {
   createTable() {
     const sql = `CREATE TABLE IF NOT EXISTS memo(
                   memo_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                  title Text,
+                  title Text NOT NULL,
                   content Text
                   )
                  `;
-    this.db.run(sql);
+    this.db.run(sql, (err) => {
+      if (err) {
+        console.error(err.message);
+      }
+    });
   }
 
-  memoFunction() {
+  parseOptions() {
     return minimist(this.option.slice(2), {
       boolean: ["l", "r", "d"],
       unknown: (errorOption) => {
@@ -52,23 +61,61 @@ class Memo {
     });
   }
 
-  createPipeline() {
-    process.stdin.on("data", (text) => {
-      const memo = text.toString();
-      this.db.run("INSERT INTO memo (title) VALUES(?)", [memo]);
-      console.log("Created.");
+  insertMemo(title, content) {
+    return new Promise((resolve, reject) => {
+      this.db.run(
+        "INSERT INTO memo (title, content) VALUES(?,?)",
+        [title, content],
+        (err) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve();
+          }
+        }
+      );
     });
   }
 
-  createQuestion() {
-    rl.question("title:", (answer1) => {
-      rl.question("content:", (answer2) => {
-        this.db.run("INSERT INTO memo (title, content) VALUES(?,?)", [
-          answer1,
-          answer2,
-        ]);
-        console.log("Created.");
-        rl.close();
+  async createPipeline() {
+    try {
+      process.stdin.on("data", async (text) => {
+        const title = text.toString();
+        await this.insertMemo(title, null);
+        console.log(`Created. title:${title}`);
+      });
+    } catch (err) {
+      console.error(err.message);
+    }
+  }
+
+  rlQuestion(prompt) {
+    return new Promise((resolve) => {
+      rl.question(prompt, (answer) => {
+        resolve(answer);
+      });
+    });
+  }
+
+  async createQuestion() {
+    try {
+      const title = await this.rlQuestion("Please enter the title.:");
+      const content = await this.rlQuestion("Please enter the content.:");
+      await this.insertMemo(title, content);
+      console.log(`Created. title:${title}`);
+    } catch (err) {
+      console.error(err.message);
+    }
+  }
+
+  getMemoTitle() {
+    return new Promise((resolve, reject) => {
+      this.db.all("SELECT title FROM memo", [], (err, titles) => { // "rows" を追加
+        if (err) {
+          reject(err);
+        } else {
+          resolve(titles);
+        }
       });
     });
   }
