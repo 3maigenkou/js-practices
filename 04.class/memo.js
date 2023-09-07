@@ -1,8 +1,8 @@
-import minimist from "minimist";
 import enquirer from "enquirer";
 const { Select } = enquirer;
 import readline from "readline";
 import MemoDatabase from "./MemoDatabase.js";
+import MemoOption from "./MemoOption.js";
 
 export default class Memo {
   constructor() {
@@ -11,11 +11,12 @@ export default class Memo {
       output: process.stdout,
     });
     this.db = new MemoDatabase;
+    this.option = new MemoOption(process.argv);
   }
 
-  async run(argv = null) {
+  async run() {
     try {
-      const option = this.#parseOptions(argv);
+      const option = this.option.parseOptions();
       if (option.l) {
         await this.#list();
       } else if (option.r) {
@@ -33,16 +34,6 @@ export default class Memo {
       this.db.close();
       this.rl.close();
     }
-  }
-
-  #parseOptions(argv) {
-    return minimist(argv.slice(2), {
-      boolean: ["l", "r", "d"],
-      unknown: (errorOption) => {
-        console.error(`Unknown option: ${errorOption}`);
-        process.exit(9);
-      },
-    });
   }
 
   #getPipelineText() {
@@ -63,7 +54,7 @@ export default class Memo {
       const pipelineText = await this.#getPipelineText();
       const title = pipelineText[0];
       const content = pipelineText.slice(1).join("\n");
-      await this.db.insertMemo(title, content);
+      await this.db.saveMemo(title, content);
       console.log(`Created. title:${title}`);
     } catch (err) {
       console.error(err.message);
@@ -82,7 +73,7 @@ export default class Memo {
     try {
       const title = await this.#rlQuestion("Please enter the title.:");
       const content = await this.#rlQuestion("Please enter the content.:");
-      await this.db.insertMemo(title, content);
+      await this.db.saveMemo(title, content);
       console.log(`Created. title:${title}`);
     } catch (err) {
       console.error(err.message);

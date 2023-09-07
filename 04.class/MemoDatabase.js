@@ -45,7 +45,7 @@ export default class MemoDatabase {
     });
   }
 
-  insertMemo(title, content) {
+  saveMemo(title, content) {
     return new Promise((resolve, reject) => {
       this.db.run(
         "INSERT INTO memo (title, content) VALUES(?,?)",
