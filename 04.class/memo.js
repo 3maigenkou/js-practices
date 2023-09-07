@@ -1,14 +1,14 @@
-import enquirer from "enquirer";
-const { Select } = enquirer;
 import MemoDatabase from "./MemoDatabase.js";
 import MemoOption from "./MemoOption.js";
 import ReadlineManager from "./ReadlineManager.js";
+import MemoSelector from "./MemoSelector.js";
 
 export default class Memo {
   constructor() {
     this.readlineManager = new ReadlineManager();
     this.memoDatabase = new MemoDatabase();
     this.memoOption = new MemoOption(process.argv);
+    this.memoSelector = new MemoSelector();
   }
 
   async run() {
@@ -69,30 +69,9 @@ export default class Memo {
     }
   }
 
-  #select(message, choices) {
-    const prompt = new Select({
-      message: message,
-      choices: choices,
-    });
-    return prompt.run();
-  }
-
-  async #getSelectedMemo(message) {
-    const memos = await this.memoDatabase.getMemoData();
-    if (memos.length === 0) {
-      console.log("There are no memos.");
-      return;
-    }
-    const selectedTitle = await this.#select(
-      message,
-      memos.map((memo) => memo.title)
-    );
-    return memos.find((memo) => memo.title === selectedTitle);
-  }
-
   async #read() {
     try {
-      const readingMemo = await this.#getSelectedMemo(
+      const readingMemo = await this.memoSelector.getSelectedMemo(
         "Please select the memo you would like to view."
       );
       if (readingMemo) {
@@ -105,7 +84,7 @@ export default class Memo {
 
   async #delete() {
     try {
-      const selectedMemo = await this.#getSelectedMemo(
+      const selectedMemo = await this.memoSelector.getSelectedMemo(
         "Please select the memo you would like to delete."
       );
       if (selectedMemo) {
