@@ -1,22 +1,19 @@
 import enquirer from "enquirer";
 const { Select } = enquirer;
-import readline from "readline";
 import MemoDatabase from "./MemoDatabase.js";
 import MemoOption from "./MemoOption.js";
+import ReadlineManager from "./ReadlineManager.js";
 
 export default class Memo {
   constructor() {
-    this.rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout,
-    });
-    this.db = new MemoDatabase;
-    this.option = new MemoOption(process.argv);
+    this.readlineManager = new ReadlineManager();
+    this.memoDatabase = new MemoDatabase();
+    this.memoOption = new MemoOption(process.argv);
   }
 
   async run() {
     try {
-      const option = this.option.parseOptions();
+      const option = this.memoOption.parseOptions();
       if (option.l) {
         await this.#list();
       } else if (option.r) {
@@ -31,49 +28,28 @@ export default class Memo {
     } catch (err) {
       console.error(err.message);
     } finally {
-      this.db.close();
-      this.rl.close();
+      this.memoDatabase.close();
+      this.readlineManager.close();
     }
-  }
-
-  #getPipelineText() {
-    return new Promise((resolve) => {
-      let pipelineText = [];
-      this.rl.on("line", (text) => {
-        pipelineText.push(text);
-      });
-
-      this.rl.on("close", () => {
-        resolve(pipelineText);
-      });
-    });
   }
 
   async #createPipeline() {
     try {
-      const pipelineText = await this.#getPipelineText();
+      const pipelineText = await this.readlineManager.getPipelineText();
       const title = pipelineText[0];
       const content = pipelineText.slice(1).join("\n");
-      await this.db.saveMemo(title, content);
+      await this.memoDatabase.saveMemo(title, content);
       console.log(`Created. title:${title}`);
     } catch (err) {
       console.error(err.message);
     }
   }
 
-  #rlQuestion(prompt) {
-    return new Promise((resolve) => {
-      this.rl.question(prompt, (answer) => {
-        resolve(answer);
-      });
-    });
-  }
-
   async #createQuestion() {
     try {
-      const title = await this.#rlQuestion("Please enter the title.:");
-      const content = await this.#rlQuestion("Please enter the content.:");
-      await this.db.saveMemo(title, content);
+      const title = await this.readlineManager.rlQuestion("Please enter the title.:");
+      const content = await this.readlineManager.rlQuestion("Please enter the content.:");
+      await this.memoDatabase.saveMemo(title, content);
       console.log(`Created. title:${title}`);
     } catch (err) {
       console.error(err.message);
@@ -82,7 +58,7 @@ export default class Memo {
 
   async #list() {
     try {
-      const memos = await this.db.getMemoData();
+      const memos = await this.memoDatabase.getMemoData();
       if (memos.length === 0) {
         console.log("There are no memos.");
         return;
@@ -102,7 +78,7 @@ export default class Memo {
   }
 
   async #getSelectedMemo(message) {
-    const memos = await this.db.getMemoData();
+    const memos = await this.memoDatabase.getMemoData();
     if (memos.length === 0) {
       console.log("There are no memos.");
       return;
@@ -133,7 +109,7 @@ export default class Memo {
         "Please select the memo you would like to delete."
       );
       if (selectedMemo) {
-        await this.db.deleteMemo(selectedMemo.memo_id);
+        await this.memoDatabase.deleteMemo(selectedMemo.memo_id);
         console.log("Deleted.");
       }
     } catch (error) {
