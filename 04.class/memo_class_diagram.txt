@@ -1,19 +1,34 @@
 -Memo
-  -rl
-  -db
-  -run(argv = null)
-  -#closeDbAndRl()
-  -#createTable()
-  -#parseOptions(argv)
-  -#insertMemo(title, content)
-  -#getPipelineText()
+  -readlineManager
+  -memoDatabase
+  -memoOption(process.argv)
+  -memoSelector
+  -run()
   -#createPipeline()
-  -#rlQuestion(prompt)
   -#createQuestion()
-  -#getMemoData()
   -#list()
-  -#select(message, choices)
-  -#getSelectedMemo(message)
   -#read()
-  -#deleteMemo(id)
   -#delete()
+
+-MemoDatabase
+  -db
+  -close()
+  -#createTable()
+  -getMemoData()
+  -saveMemo(title, content)
+  -deleteMemo(id)
+
+-MemoOption {
+  -argv
+  -parseOptions()
+
+-MemoSelector {
+  -memoDatabase
+  -select(message, choices)
+  -getSelectedMemo(message)
+
+-ReadlineManager {
+  -rl
+  -close()
+  -getPipelineText()
+  -rlQuestion(prompt)
