@@ -1,3 +1,3 @@
-import Memo from "./Memo.js";
+import Memo from "./lib/Memo.js";
 
 new Memo().run();
