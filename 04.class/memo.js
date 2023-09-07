@@ -47,8 +47,12 @@ export default class Memo {
 
   async #createQuestion() {
     try {
-      const title = await this.readlineManager.rlQuestion("Please enter the title.:");
-      const content = await this.readlineManager.rlQuestion("Please enter the content.:");
+      const title = await this.readlineManager.rlQuestion(
+        "Please enter the title.:"
+      );
+      const content = await this.readlineManager.rlQuestion(
+        "Please enter the content.:"
+      );
       await this.memoDatabase.saveMemo(title, content);
       console.log(`Created. title:${title}`);
     } catch (err) {

@@ -2,7 +2,7 @@ import minimist from "minimist";
 
 export default class MemoOption {
   constructor(argv = null) {
-    this.argv = argv
+    this.argv = argv;
   }
 
   parseOptions() {

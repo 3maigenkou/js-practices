@@ -1,5 +1,5 @@
 import enquirer from "enquirer";
-const { Select } = enquirer
+const { Select } = enquirer;
 import MemoDatabase from "./MemoDatabase.js";
 
 export default class MemoSelector {
@@ -15,9 +15,6 @@ export default class MemoSelector {
     return prompt.run();
   }
 
-
-
-
   async getSelectedMemo(message) {
     const memos = await this.memoDatabase.getMemoData();
     if (memos.length === 0) {
@@ -30,5 +27,4 @@ export default class MemoSelector {
     );
     return memos.find((memo) => memo.title === selectedTitle);
   }
-
 }
