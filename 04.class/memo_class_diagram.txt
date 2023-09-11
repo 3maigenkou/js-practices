@@ -4,8 +4,7 @@
   -memoOption(process.argv)
   -memoSelector
   -run()
-  -#createPipeline()
-  -#createQuestion()
+  -#create()
   -#list()
   -#read()
   -#delete()
@@ -14,7 +13,8 @@
   -db
   -close()
   -#createTable()
-  -getMemoData()
+  -findAll()
+  -findById(id)
   -saveMemo(title, content)
   -deleteMemo(id)
 
@@ -25,10 +25,9 @@
 -MemoSelector {
   -memoDatabase
   -select(message, choices)
-  -getSelectedMemo(message)
+  -getSelectedMemoId(message)
 
 -ReadlineManager {
   -rl
   -close()
   -getPipelineText()
-  -rlQuestion(prompt)
