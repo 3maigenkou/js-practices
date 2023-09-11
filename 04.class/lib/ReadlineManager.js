@@ -28,12 +28,4 @@ export default class ReadlineManager {
       });
     });
   }
-
-  rlQuestion(prompt) {
-    return new Promise((resolve) => {
-      this.rl.question(prompt, (answer) => {
-        resolve(answer);
-      });
-    });
-  }
 }

@@ -33,9 +33,21 @@ export default class MemoDatabase {
     });
   }
 
-  getMemoData() {
+  findAll() {
     return new Promise((resolve, reject) => {
       this.db.all("SELECT * FROM memo", [], (err, data) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(data);
+        }
+      });
+    });
+  }
+
+  findById(id) {
+    return new Promise((resolve, reject) => {
+      this.db.get("SELECT * FROM memo WHERE memo_id = ?", [id], (err, data) => {
         if (err) {
           reject(err);
         } else {

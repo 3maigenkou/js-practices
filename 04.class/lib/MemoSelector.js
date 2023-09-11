@@ -15,8 +15,8 @@ export default class MemoSelector {
     return prompt.run();
   }
 
-  async getSelectedMemo(message) {
-    const memos = await this.memoDatabase.getMemoData();
+  async getSelectedMemoId(message) {
+    const memos = await this.memoDatabase.findAll();
     if (memos.length === 0) {
       console.log("There are no memos.");
       return;
@@ -25,6 +25,7 @@ export default class MemoSelector {
       message,
       memos.map((memo) => memo.title)
     );
-    return memos.find((memo) => memo.title === selectedTitle);
+    const memo = memos.find((memo) => memo.title === selectedTitle);
+    return memo.memo_id;
   }
 }
