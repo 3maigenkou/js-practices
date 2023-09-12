@@ -1,0 +1,33 @@
+-Memo
+  -readlineManager
+  -memoDatabase
+  -memoOption(process.argv)
+  -memoSelector
+  -run()
+  -#create()
+  -#list()
+  -#read()
+  -#delete()
+
+-MemoDatabase
+  -db
+  -close()
+  -#createTable()
+  -findAll()
+  -findById(id)
+  -saveMemo(title, content)
+  -deleteMemo(id)
+
+-MemoOption {
+  -argv
+  -parseOptions()
+
+-MemoSelector {
+  -memoDatabase
+  -select(message, choices)
+  -getSelectedMemoId(message)
+
+-ReadlineManager {
+  -rl
+  -close()
+  -getPipelineText()
